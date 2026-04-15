@@ -1,0 +1,50 @@
+{
+  "tasks": [
+    {
+      "id": "task-001",
+      "description": "Initialize desktop topology viewer scaffold",
+      "status": "completed",
+      "dependencies": [],
+      "tasks": [
+        {
+          "id": "task-001-01",
+          "description": "Set up Tauri + React + Vite architecture",
+          "status": "completed",
+          "dependencies": ["task-001"]
+        },
+        {
+          "id": "task-001-02",
+          "description": "Create fixed sidebar and route shells",
+          "status": "completed",
+          "dependencies": ["task-001-01"]
+        }
+      ]
+    },
+    {
+      "id": "task-002",
+      "description": "Render DAG from agent memory",
+      "status": "in_progress",
+      "dependencies": ["task-001-02"],
+      "tasks": [
+        {
+          "id": "task-002-01",
+          "description": "Map dependencies into directed edges",
+          "status": "in_progress",
+          "dependencies": ["task-002"]
+        },
+        {
+          "id": "task-002-02",
+          "description": "Display task cards with id/description/status",
+          "status": "pending",
+          "dependencies": ["task-002-01"]
+        }
+      ]
+    },
+    {
+      "id": "task-003",
+      "description": "Monitor memory updates and sync frontend",
+      "status": "pending",
+      "dependencies": ["task-002-02"]
+    }
+  ]
+}
