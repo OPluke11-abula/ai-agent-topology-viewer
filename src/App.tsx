@@ -62,6 +62,14 @@ const T = {
       { title: "多 AI 並行協作", body: "Codex 可處理程式碼生成，Antigravity 可處理規劃與回顧。兩者均透過讀寫 agent_memory.json 的 status 與 ai_feedback 欄位來交換上下文，不需要直接通訊。" },
       { title: "人工監控", body: "使用者在 Task Flow 視圖中即時觀察 AI 進度，點擊節點改變狀態即可指揮 AI 進行下一步，無需手動編輯 JSON。" },
     ],
+    aiGuideTitle: "與 AI 代理 (Codex/Antigravity) 協作指南",
+    aiGuideSteps: [
+      { title: "1. 配置獨立 Workspace", body: "在上方『工作區』區塊加入新專案，填寫專屬的 JSON 路徑（例如 D:\\ProjectA\\workspace）。輸入完畢後記得點擊「確認」按鈕來套用新路徑。" },
+      { title: "2. 啟動規劃師 (Antigravity)", body: "對 AI 說：『請幫我規劃這項功能，並寫入 [剛剛的JSON路徑]\\agent_memory.json 中，新任務設為 pending』。這時 Topology 圖會自動長出子節點。" },
+      { title: "3. 批准任務", body: "在 UI 介面上找到你要開始的任務，手動把狀態從 Pending 切換成 In Progress。這一步代表你允許 AI 開發。" },
+      { title: "4. 派遣執行者 (Codex)", body: "對寫程式的 AI 說：『請尋找 JSON 裡 in_progress 的任務並執行。完成後把狀態改為 completed，並在 ai_feedback 記錄結果。』" },
+      { title: "💡 確保 AI 吃到設定 (AGENTS.md)", body: "在開啟對話的當下，你必須給 AI 初始指令：『請詳閱工作目錄下的 AGENTS.md 並遵守規範』，AI 才會啟動並吃到所有的規則。" },
+    ],
     opManual: "操作說明",
     opSteps: [
       { title: "載入任務", body: "Tauri 啟動時自動讀取 workspace/agent_memory.json。設定 AGENT_WORKSPACE_DIR 可指向自訂目錄。" },
@@ -110,6 +118,14 @@ const T = {
       { title: "Live File Watching", body: "The Tauri backend uses the notify crate to watch the workspace directory. Any external program modifying the JSON causes the graph to re-render within milliseconds." },
       { title: "Multi-AI Parallel Collaboration", body: "Codex handles code generation, Antigravity handles planning and review. Both exchange context through status and ai_feedback fields without direct communication." },
       { title: "Human Oversight", body: "Users observe AI progress in real time. Clicking a node to change its status directly directs the AI to the next step — no manual JSON editing required." },
+    ],
+    aiGuideTitle: "Collaboration Guide: Codex / Antigravity",
+    aiGuideSteps: [
+      { title: "1. Configure Workspace", body: "Add a new workspace and specify an absolute JSON path (e.g., D:\\Proj\\workspace) so your AI agents don't step on each other. Remember to click 'Confirm' after entering the path to apply the change." },
+      { title: "2. Deploy Planner (Antigravity)", body: "Tell your AI: 'Plan this feature and write tasks to [Your Path]\\agent_memory.json setting status to pending'. The UI graph will update instantly." },
+      { title: "3. Review & Approve", body: "Find the new pending nodes in this app, and change the ones you want started to In Progress. This gives the AI clearance to proceed." },
+      { title: "4. Deploy Executor (Codex)", body: "Tell your executing AI: 'Find in_progress tasks in the JSON, execute them, then change status to completed and log your work in ai_feedback'." },
+      { title: "💡 Ensuring AI reads AGENTS.md", body: "This UI toggle prepares the markdown file, but you must still explicitly tell your AI: 'Read AGENTS.md and follow its rules' when you start the conversation." },
     ],
     opManual: "Operating Manual",
     opSteps: [
@@ -515,6 +531,7 @@ function SettingsView({ lang, setLang, theme, setTheme, workspaces, setWorkspace
   t: typeof T["en"];
 }) {
   const [openTip, setOpenTip] = useState<number | null>(null);
+  const [draftPaths, setDraftPaths] = useState<Record<string, string>>({});
   const addWs = () => setWorkspaces((ws) => [...ws, { id: `ws-${Date.now()}`, name: `Project ${ws.length + 1}`, lang: "TypeScript", path: "" }]);
   const removeWs = (id: string) => setWorkspaces((ws) => ws.filter((w) => w.id !== id));
   const updateWs = (id: string, field: "name" | "lang" | "path", val: string) => setWorkspaces((ws) => ws.map((w) => w.id === id ? { ...w, [field]: val } : w));
@@ -589,10 +606,22 @@ function SettingsView({ lang, setLang, theme, setTheme, workspaces, setWorkspace
                   </button>
                 )}
               </div>
-              <input value={ws.path} onChange={(e) => updateWs(ws.id, "path", e.target.value)}
-                placeholder={t.wsPathPlaceholder}
-                className="w-full rounded-lg border px-3 py-2 text-xs font-mono focus:outline-none focus:ring-1"
-                style={{ ...inputStyle, borderColor: "var(--border-c)", opacity: 0.85 }} />
+              <div className="flex gap-2">
+                <input value={draftPaths[ws.id] ?? ws.path} onChange={(e) => setDraftPaths({ ...draftPaths, [ws.id]: e.target.value })}
+                  placeholder={t.wsPathPlaceholder}
+                  className="w-full rounded-lg border px-3 py-2 text-xs font-mono focus:outline-none focus:ring-1"
+                  style={{ ...inputStyle, borderColor: "var(--border-c)", opacity: 0.85 }} />
+                <button type="button" 
+                  onClick={() => draftPaths[ws.id] !== undefined && updateWs(ws.id, "path", draftPaths[ws.id])}
+                  className="text-xs font-bold px-3 py-2 rounded-lg border transition-all"
+                  style={draftPaths[ws.id] !== undefined && draftPaths[ws.id] !== ws.path ? 
+                    { background: "var(--accent)", color: "#fff", borderColor: "var(--accent)" } : 
+                    { ...inputStyle, opacity: 0.5, cursor: "not-allowed" }
+                  }
+                  disabled={draftPaths[ws.id] === undefined || draftPaths[ws.id] === ws.path}>
+                  {t.confirm}
+                </button>
+              </div>
             </div>
           ))}
         </div>
@@ -609,6 +638,24 @@ function SettingsView({ lang, setLang, theme, setTheme, workspaces, setWorkspace
                 {String(i + 1).padStart(2, "0")}
               </div>
               <div><p className="text-sm font-bold t1">{step.title}</p><p className="mt-1 text-xs t3 leading-relaxed">{step.body}</p></div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* AI Collaboration Guide */}
+      <section className="mb-7">
+        <div className="mb-4 p-4 rounded-xl border flex gap-3" style={{ background: "var(--accent-bg)", borderColor: "var(--accent)" }}>
+          <span style={{ color: "var(--accent)" }}>🔰</span>
+          <p className="text-sm font-bold" style={{ color: "var(--accent)" }}>{t.aiGuideTitle}</p>
+        </div>
+        <div className="grid gap-3">
+          {t.aiGuideSteps.map((step, i) => (
+            <div key={i} className="p-4 rounded-xl border card-bg">
+              <p className="text-sm font-bold t1 mb-1" style={{ color: i === t.aiGuideSteps.length - 1 ? "var(--accent)" : "currentColor" }}>
+                {step.title}
+              </p>
+              <p className="text-xs t3 leading-relaxed">{step.body}</p>
             </div>
           ))}
         </div>

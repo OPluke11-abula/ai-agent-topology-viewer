@@ -51,53 +51,53 @@ npm run tauri dev
 
 ---
 
-## 🤝 與 AI 代理協作
+## 📖 完整使用說明與 AI 協作指南
 
-### 三者分工
+本工具的設計理念是作為 **人類與多個 AI 代理（如 Codex 和 Antigravity）的視覺化溝通橋樑**。所有的狀態同步都透過單一個 JSON 檔案 (`agent_memory.json`) 達成。
 
-```
-Antigravity (規劃師)       Codex (執行者)
-       │                       │
-       └──────────┬────────────┘
-                  ↓
-         agent_memory.json
-         (共用任務狀態檔案)
-                  ↑
-     AI Agent Topology Viewer
-     (你的即時控制視窗)
-```
+### 角色分工
 
-### agent_memory.json 格式
-
-```json
-{
-  "tasks": [
-    {
-      "id": "task-001",
-      "description": "實作登入 API",
-      "status": "in_progress",
-      "dependencies": [],
-      "ai_feedback": "決定使用 JWT，TTL 設為 24h",
-      "tasks": [
-        {
-          "id": "task-001-01",
-          "description": "設計 POST /auth/login 端點",
-          "status": "completed",
-          "dependencies": ["task-001"]
-        }
-      ]
-    }
-  ]
-}
+```text
+┌─────────────────────────────────────────────────────────┐
+│                                                         │
+│   Antigravity             Codex                         │
+│   (規劃 + 架構決策)        (程式碼生成 + 執行)              │
+│         │                      │                        │
+│         └──────────┬───────────┘                        │
+│                    ↓                                    │
+│           agent_memory.json                             │
+│           (共用任務狀態檔)                                │
+│                    ↑                                    │
+│                    │                                    │
+│     AI Agent Topology Viewer (你的控制視窗)              │
+│     (即時視覺化 + 人工干預 + 狀態管理)                     │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
 ```
 
-### 工作流程
+### 🧠 Antigravity (規劃師) 指南
 
-1. **Antigravity** 規劃任務 → 寫入 `agent_memory.json`
-2. **Topology Viewer** 自動顯示任務 DAG 圖
-3. **你** 在 UI 點擊任務 → 改為 `in_progress`（批准執行）
-4. **Codex** 讀取 `in_progress` 任務 → 執行 → 標記 `completed` + 寫 `ai_feedback`
-5. 回到步驟 1，循環迭代
+Antigravity 負責理解需求、拆解任務，並寫入 JSON。請對 Antigravity 下達類似以下指令：
+
+> 「你是一位 AI 開發規劃師。請幫我規劃一個登入系統，並將規劃結果更新到 `D:\Projects\my-project\workspace\agent_memory.json`。
+> 每完成一個步驟：
+> 1. 新任務：在 tasks 陣列中新增節點 (status 設為 `pending`)
+> 2. 完成時：將 status 改為 `completed`
+> 3. 反省：在 `ai_feedback` 寫下簡短反省」
+
+### ⚙️ Codex (執行者) 指南
+
+Codex 負責撰寫實際程式碼。請對 Codex 下達類似以下指令：
+
+> 「請讀取 `D:\Projects\my-project\workspace\agent_memory.json` 尋找 `status` 為 `in_progress` 的任務。
+> 執行該任務後，如果完成，請將 JSON 中的狀態改為 `completed`，並在 `ai_feedback` 留下你修改了哪些檔案或遭遇的問題。」
+
+### 🧑‍💻 人類 (你) 的日常工作循環
+
+1. **規劃階段**：你要求 Antigravity 規劃任務。它將任務寫入 JSON (狀態為 `pending` 🟡)。
+2. **監控與批准**：你在 Topology Viewer 中看到新長出的圖表節點。點擊你想開始的任務，手動將狀態切換為 `in_progress` 🔵。這代表了你的**批准執行**。
+3. **執行階段**：你命令 Codex 去處理 `in_progress` 的任務。
+4. **回顧階段**：Codex 完成後，節點在 UI 變成 `completed` 🟢。點擊節點右側滑出面板，你可以閱讀 `ai_feedback`，確認 AI 的想法。並根據結果進行下一波規劃。
 
 ---
 
