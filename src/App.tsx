@@ -258,7 +258,8 @@ function App() {
           setMemory(payload);
         }
       })
-      .catch(() => {
+      .catch((error) => {
+        console.error("Failed to load agent_memory.json", error);
         setMemory(FALLBACK_MEMORY);
       });
 

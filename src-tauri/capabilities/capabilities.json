@@ -14,6 +14,9 @@
         },
         {
           "path": "$HOME/ai-agent-topology-viewer/logs/**/*.log"
+        },
+        {
+          "path": "$HOME/ai-agent-topology-viewer/workspace/agent_memory.json"
         }
       ]
     }
