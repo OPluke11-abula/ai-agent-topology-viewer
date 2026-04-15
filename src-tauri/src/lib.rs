@@ -16,6 +16,8 @@ struct AgentTask {
     dependencies: Vec<String>,
     #[serde(default)]
     tasks: Vec<AgentTask>,
+    #[serde(default)]
+    ai_feedback: Option<String>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -40,6 +42,13 @@ fn agent_memory_path() -> PathBuf {
 fn read_agent_memory(path: &Path) -> Result<AgentMemory, String> {
     let raw = fs::read_to_string(path).map_err(|error| error.to_string())?;
     serde_json::from_str(&raw).map_err(|error| error.to_string())
+}
+
+#[tauri::command]
+fn save_agent_memory(memory: AgentMemory) -> Result<(), String> {
+    let path = agent_memory_path();
+    let json = serde_json::to_string_pretty(&memory).map_err(|error| error.to_string())?;
+    fs::write(&path, json).map_err(|error| error.to_string())
 }
 
 fn emit_agent_memory_update(app_handle: &AppHandle, path: &Path) {
@@ -105,6 +114,20 @@ fn load_agent_memory() -> Result<AgentMemory, String> {
     read_agent_memory(&agent_memory_path())
 }
 
+#[tauri::command]
+fn load_agent_memory_from(path: String) -> Result<AgentMemory, String> {
+    let p = PathBuf::from(&path).join("agent_memory.json");
+    read_agent_memory(&p)
+}
+
+#[tauri::command]
+fn save_agent_memory_to(path: String, memory: AgentMemory) -> Result<(), String> {
+    let dir = PathBuf::from(&path);
+    fs::create_dir_all(&dir).map_err(|e| e.to_string())?;
+    let json = serde_json::to_string_pretty(&memory).map_err(|e| e.to_string())?;
+    fs::write(dir.join("agent_memory.json"), json).map_err(|e| e.to_string())
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -114,7 +137,12 @@ pub fn run() {
             watch_agent_memory(app.handle().clone());
             Ok(())
         })
-        .invoke_handler(tauri::generate_handler![load_agent_memory])
+        .invoke_handler(tauri::generate_handler![
+            load_agent_memory,
+            load_agent_memory_from,
+            save_agent_memory,
+            save_agent_memory_to,
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

@@ -1,0 +1,63 @@
+name: Release — Windows Build
+
+on:
+  push:
+    tags:
+      - "v*"          # Triggers on any tag like v1.0.0, v0.2.1, etc.
+
+jobs:
+  build-windows:
+    name: Build & Bundle (Windows x86_64)
+    runs-on: windows-latest
+    permissions:
+      contents: write   # Required to upload release assets
+
+    steps:
+      # 1. Checkout source
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Install Rust stable toolchain
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-pc-windows-msvc
+
+      # 3. Cache Rust build artefacts to speed up subsequent runs
+      - name: Cache Cargo registry & build
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      # 4. Install Node.js LTS (v22) and cache npm
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      # 5. Install frontend dependencies
+      - name: Install npm dependencies
+        run: npm ci
+
+      # 6. Build the Tauri app — produces .exe + .msi under src-tauri/target/release/bundle/
+      - name: Build Tauri application
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: "AI Agent Topology Viewer ${{ github.ref_name }}"
+          releaseBody: |
+            ## What's New
+            See the [CHANGELOG](https://github.com/${{ github.repository }}/commits/${{ github.ref_name }}) for details.
+
+            ## Installation
+            - **Windows Installer (.msi):** Recommended for most users — double-click and follow the wizard.
+            - **Portable (.exe):** No installation required — run directly.
+
+            ## Requirements
+            - Windows 10 / 11 (x86_64)
+            - [Microsoft Edge WebView2](https://developer.microsoft.com/en-us/microsoft-edge/webview2/) (pre-installed on Windows 11, auto-installed by the MSI on Windows 10)
+          releaseDraft: false
+          prerelease: false
