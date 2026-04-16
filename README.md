@@ -14,12 +14,14 @@
 | 功能 | 說明 |
 |------|------|
 | **即時 DAG 視覺化** | 讀取 `agent_memory.json`，以有向無環圖呈現 AI 任務樹，支援 dagre 自動排版 |
+| **自動初始化工作區** | 無痛建立 AI 協作環境！自動生成 `agent_memory.json` 骨架與 `AGENTS.md` 規則文檔 |
 | **雙向狀態同步** | 點擊任務節點改變狀態，即時寫回 JSON，AI 代理可即時感知 |
+| **強大防呆與容錯** | 內建 Auto-chain 與屬性回退機制，當 AI JSON 缺少依賴定義時也能自動串聯防崩潰 |
 | **5 種視覺主題** | 黑色 / Tokyo 電子風 / 白色 / 森林綠 / 米棕色，一鍵切換 |
 | **中英語言切換** | 全介面文字支援繁體中文 / English 即時切換 |
-| **多工作區管理** | 為不同專案設定獨立 JSON 路徑，AI 代理依路徑區分工作區 |
-| **MODs 技能路由** | 基於 AGENTS.md 的技能提示詞勾選，20 個 `.agent/skills/` 技能支援中英標籤 |
-| **規則卡片系統** | AI 指令各自獨立一張卡片，+ 新增 / − 刪除均附確認 Modal |
+| **多工作區管理** | 為不同專案設定獨立 JSON 路徑，多位 AI 代理平行作業互不干擾 |
+| **MODs 技能路由** | 基於 AGENTS.md 的技能提示詞勾選，內置多達 20 個專業開發者技能標籤 |
+| **規則卡片系統** | AI 指令各自獨立一張卡片，自由新增/刪除專案等級指令 |
 | **Codex & Antigravity 協作** | 三者透過共享 JSON 實現非同步多 AI 並行協作 |
 
 ---
@@ -80,10 +82,18 @@ npm run tauri dev
 Antigravity 負責理解需求、拆解任務，並寫入 JSON。請對 Antigravity 下達類似以下指令：
 
 > 「你是一位 AI 開發規劃師。請幫我規劃一個登入系統，並將規劃結果更新到 `D:\Projects\my-project\workspace\agent_memory.json`。
-> 每完成一個步驟：
-> 1. 新任務：在 tasks 陣列中新增節點 (status 設為 `pending`)
-> 2. 完成時：將 status 改為 `completed`
-> 3. 反省：在 `ai_feedback` 寫下簡短反省」
+> 
+> ⚠️ 嚴格格式要求 — 每個任務節點必須且只能包含以下欄位：
+> ```json
+> {
+>   "id": "task-001",
+>   "description": "任務描述文字",
+>   "status": "pending",
+>   "dependencies": [],
+>   "ai_feedback": ""
+> }
+> ```
+> ❌ 禁止新增 title、design、findings 等自訂欄位，否則 UI 無法正確渲染。」
 
 ### ⚙️ Codex (執行者) 指南
 

@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+﻿import { useEffect, useState, useCallback } from "react";
 import {
   Handle, Position, ReactFlow, Background, BackgroundVariant,
   type Edge, type Node, type NodeProps, useNodesState, useEdgesState,
@@ -64,11 +64,11 @@ const T = {
     ],
     aiGuideTitle: "與 AI 代理 (Codex/Antigravity) 協作指南",
     aiGuideSteps: [
-      { title: "1. 配置獨立 Workspace", body: "在上方『工作區』區塊加入新專案，填寫專屬的 JSON 路徑（例如 D:\\ProjectA\\workspace）。輸入完畢後記得點擊「確認」按鈕來套用新路徑。" },
-      { title: "2. 啟動規劃師 (Antigravity)", body: "對 AI 說：『請幫我規劃這項功能，並寫入 [剛剛的JSON路徑]\\agent_memory.json 中，新任務設為 pending』。這時 Topology 圖會自動長出子節點。" },
-      { title: "3. 批准任務", body: "在 UI 介面上找到你要開始的任務，手動把狀態從 Pending 切換成 In Progress。這一步代表你允許 AI 開發。" },
-      { title: "4. 派遣執行者 (Codex)", body: "對寫程式的 AI 說：『請尋找 JSON 裡 in_progress 的任務並執行。完成後把狀態改為 completed，並在 ai_feedback 記錄結果。』" },
-      { title: "💡 確保 AI 吃到設定 (AGENTS.md)", body: "在開啟對話的當下，你必須給 AI 初始指令：『請詳閱工作目錄下的 AGENTS.md 並遵守規範』，AI 才會啟動並吃到所有的規則。" },
+      { title: "1. \u914d\u7f6e\u7368\u7acb Workspace", body: "\u5728\u4e0a\u65b9\u300e\u5de5\u4f5c\u5340\u300f\u5340\u584a\u52a0\u5165\u65b0\u5c08\u6848\uff0c\u586b\u5beb\u5c08\u5c6c\u7684 JSON \u8def\u5f91\uff08\u4f8b\u5982 D:\\\\ProjectA\\\\workspace\uff09\u3002\u8f38\u5165\u5b8c\u7562\u5f8c\u8a18\u5f97\u9ede\u64ca\u300c\u78ba\u8a8d\u300d\u6309\u9215\u4f86\u5957\u7528\u65b0\u8def\u5f91\u3002" },
+      { title: "\ud83e\udde0 Antigravity\uff08\u898f\u5283\u5e2b\uff09\u6307\u5357", body: "Antigravity \u8ca0\u8cac\u7406\u89e3\u9700\u6c42\u3001\u62c6\u89e3\u4efb\u52d9\uff0c\u4e26\u5beb\u5165 JSON\u3002\u8acb\u5c0d Antigravity \u4e0b\u9054\u985e\u4f3c\u4ee5\u4e0b\u6307\u4ee4\uff1a\n\n\u300e\u4f60\u662f\u4e00\u4f4d AI \u958b\u767c\u898f\u5283\u5e2b\u3002\u8acb\u5e6b\u6211\u898f\u5283\u4e00\u500b\u767b\u5165\u7cfb\u7d71\uff0c\u4e26\u5c07\u898f\u5283\u7d50\u679c\u66f4\u65b0\u5230 D:\\\\Projects\\\\my-project\\\\workspace\\\\agent_memory.json\u3002\n\n\u26a0\ufe0f \u56b4\u683c\u683c\u5f0f\u8981\u6c42 \u2014 \u6bcf\u500b\u4efb\u52d9\u7bc0\u9ede\u5fc5\u9808\u4e14\u53ea\u80fd\u5305\u542b\u4ee5\u4e0b\u6b04\u4f4d\uff1a\n{  \"id\": \"task-001\",\n   \"description\": \"\u4efb\u52d9\u63cf\u8ff0\u6587\u5b57\",\n   \"status\": \"pending\",\n   \"dependencies\": [],\n   \"ai_feedback\": \"\" }\n\n\u2022 id \u2014 \u552f\u4e00\u8b58\u5225\u78bc\uff08\u5982 task-001, task-002\uff09\n\u2022 description \u2014 \u4efb\u52d9\u8aaa\u660e\uff08\u5fc5\u586b\uff0c\u5716\u8868\u7bc0\u9ede\u986f\u793a\u6b64\u6b04\u4f4d\uff09\n\u2022 status \u2014 \u53ea\u80fd\u662f pending / in_progress / completed\n\u2022 dependencies \u2014 \u524d\u7f6e\u4efb\u52d9 id \u9663\u5217\uff08\u7b2c\u4e00\u500b\u4efb\u52d9\u8a2d []\uff09\n\u2022 ai_feedback \u2014 \u5b8c\u6210\u5f8c\u7684\u53cd\u7701\u6216\u5099\u8a3b\n\n\u274c \u7981\u6b62\u65b0\u589e title\u3001design\u3001findings \u7b49\u81ea\u8a02\u6b04\u4f4d\uff0c\u5426\u5247 UI \u7121\u6cd5\u6b63\u78ba\u6e32\u67d3\u3002\u300f" },
+      { title: "\u2699\ufe0f Codex\uff08\u57f7\u884c\u8005\uff09\u6307\u5357", body: "Codex \u8ca0\u8cac\u64b0\u5beb\u5be6\u969b\u7a0b\u5f0f\u78bc\u3002\u8acb\u5c0d Codex \u4e0b\u9054\u985e\u4f3c\u4ee5\u4e0b\u6307\u4ee4\uff1a\n\n\u300e\u8acb\u8b80\u53d6 D:\\\\Projects\\\\my-project\\\\workspace\\\\agent_memory.json\uff0c\u5c0b\u627e status \u70ba in_progress \u7684\u4efb\u52d9\u3002\u57f7\u884c\u8a72\u4efb\u52d9\u5f8c\uff0c\u5982\u679c\u5b8c\u6210\uff0c\u8acb\u5c07 JSON \u4e2d\u7684\u72c0\u614b\u6539\u70ba completed\uff0c\u4e26\u5728 ai_feedback \u7559\u4e0b\u4f60\u4fee\u6539\u4e86\u54ea\u4e9b\u6a94\u6848\u6216\u906d\u9047\u7684\u554f\u984c\u3002\u300f" },
+      { title: "\ud83e\uddd1\u200d\ud83d\udcbb \u4eba\u985e\uff08\u4f60\uff09\u7684\u65e5\u5e38\u5de5\u4f5c\u5faa\u74b0", body: "\u2460 \u898f\u5283\u968e\u6bb5\uff1a\u4f60\u8981\u6c42 Antigravity \u898f\u5283\u4efb\u52d9\u3002\u5b83\u5c07\u4efb\u52d9\u5beb\u5165 JSON\uff08\u72c0\u614b\u70ba pending \ud83d\udfe1\uff09\u3002\n\u2461 \u76e3\u63a7\u8207\u6279\u51c6\uff1a\u4f60\u5728 Topology Viewer \u4e2d\u770b\u5230\u65b0\u9577\u51fa\u7684\u5716\u8868\u7bc0\u9ede\u3002\u9ede\u64ca\u4f60\u60f3\u958b\u59cb\u7684\u4efb\u52d9\uff0c\u624b\u52d5\u5c07\u72c0\u614b\u5207\u63db\u70ba in_progress \ud83d\udd35\u3002\u9019\u4ee3\u8868\u4e86\u4f60\u7684\u6279\u51c6\u57f7\u884c\u3002\n\u2462 \u57f7\u884c\u968e\u6bb5\uff1a\u4f60\u547d\u4ee4 Codex \u53bb\u8655\u7406 in_progress \u7684\u4efb\u52d9\u3002\n\u2463 \u56de\u9867\u968e\u6bb5\uff1aCodex \u5b8c\u6210\u5f8c\uff0c\u7bc0\u9ede\u5728 UI \u8b8a\u6210 completed \ud83d\udfe2\u3002\u9ede\u64ca\u7bc0\u9ede\uff0c\u53f3\u5074\u6ed1\u51fa\u9762\u677f\u53ef\u95b1\u8b80 ai_feedback\uff0c\u78ba\u8a8d AI \u7684\u60f3\u6cd5\uff0c\u4e26\u6839\u64da\u7d50\u679c\u9032\u884c\u4e0b\u4e00\u6ce2\u898f\u5283\u3002" },
+      { title: "\ud83d\udca1 \u78ba\u4fdd AI \u5403\u5230\u8a2d\u5b9a (AGENTS.md)", body: "\u5728\u958b\u555f\u5c0d\u8a71\u7684\u7576\u4e0b\uff0c\u4f60\u5fc5\u9808\u7d66 AI \u521d\u59cb\u6307\u4ee4\uff1a\u300e\u8acb\u8a73\u95b1\u5de5\u4f5c\u76ee\u9304\u4e0b\u7684 AGENTS.md \u4e26\u9075\u5b88\u898f\u7bc4\u300f\uff0cAI \u624d\u6703\u555f\u52d5\u4e26\u5403\u5230\u6240\u6709\u7684\u898f\u5247\u3002" },
     ],
     opManual: "操作說明",
     opSteps: [
@@ -122,9 +122,9 @@ const T = {
     aiGuideTitle: "Collaboration Guide: Codex / Antigravity",
     aiGuideSteps: [
       { title: "1. Configure Workspace", body: "Add a new workspace and specify an absolute JSON path (e.g., D:\\Proj\\workspace) so your AI agents don't step on each other. Remember to click 'Confirm' after entering the path to apply the change." },
-      { title: "2. Deploy Planner (Antigravity)", body: "Tell your AI: 'Plan this feature and write tasks to [Your Path]\\agent_memory.json setting status to pending'. The UI graph will update instantly." },
-      { title: "3. Review & Approve", body: "Find the new pending nodes in this app, and change the ones you want started to In Progress. This gives the AI clearance to proceed." },
-      { title: "4. Deploy Executor (Codex)", body: "Tell your executing AI: 'Find in_progress tasks in the JSON, execute them, then change status to completed and log your work in ai_feedback'." },
+      { title: "\ud83e\udde0 Antigravity (Planner) Guide", body: "Antigravity understands requirements, decomposes tasks, and writes them to JSON. Give it a prompt like:\n\n'You are an AI development planner. Plan a login system and update D:\\\\Projects\\\\my-project\\\\workspace\\\\agent_memory.json.\n\n\u26a0\ufe0f Strict format required \u2014 each task node must contain ONLY these fields:\n{  \"id\": \"task-001\",\n   \"description\": \"Task description text\",\n   \"status\": \"pending\",\n   \"dependencies\": [],\n   \"ai_feedback\": \"\" }\n\n\u2022 id \u2014 unique identifier (e.g. task-001, task-002)\n\u2022 description \u2014 task description (required, displayed on graph nodes)\n\u2022 status \u2014 must be pending / in_progress / completed\n\u2022 dependencies \u2014 array of prerequisite task ids (first task uses [])\n\u2022 ai_feedback \u2014 reflection or notes after completion\n\n\u274c Do NOT add custom fields like title, design, findings, etc. The UI cannot render them.'" },
+      { title: "⚙️ Codex (Executor) Guide", body: "Codex writes actual code. Give it a prompt like:\n\n'Read D:\\Projects\\my-project\\workspace\\agent_memory.json and find tasks with status in_progress. Execute the task, then change the JSON status to completed and leave a note in ai_feedback describing which files you modified or issues encountered.'" },
+      { title: "🧑\u200d💻 Human (You) Daily Workflow", body: "① Planning: Ask Antigravity to plan tasks. It writes them to JSON (status: pending 🟡).\n② Monitor & Approve: New nodes appear in Topology Viewer. Click a task you want to start and switch it to in_progress 🔵 — this is your approval.\n③ Execution: Command Codex to handle in_progress tasks.\n④ Review: After Codex finishes, nodes turn completed 🟢. Click a node to open the detail panel, read ai_feedback, confirm the AI's work, then begin the next planning cycle." },
       { title: "💡 Ensuring AI reads AGENTS.md", body: "This UI toggle prepares the markdown file, but you must still explicitly tell your AI: 'Read AGENTS.md and follow its rules' when you start the conversation." },
     ],
     opManual: "Operating Manual",
@@ -220,7 +220,10 @@ function usePersistedState<T>(key: string, initial: T) {
 
 // ─── Graph Utilities ───────────────────────────────────────────────────────────
 function flattenTasks(tasks: AgentTask[], depth = 0): Array<AgentTask & { depth: number }> {
-  return tasks.flatMap((t) => [{ ...t, depth }, ...flattenTasks(t.tasks ?? [], depth + 1)]);
+  return tasks.flatMap((t) => [
+    { ...t, dependencies: t.dependencies ?? [], description: t.description || (t as any).title || t.id, depth },
+    ...flattenTasks(t.tasks ?? [], depth + 1),
+  ]);
 }
 
 function getLayouted(nodes: Node<TaskNodeData>[], edges: Edge[]) {
@@ -241,13 +244,25 @@ function getLayouted(nodes: Node<TaskNodeData>[], edges: Edge[]) {
 
 function buildFlow(memory: AgentMemory, sl: TaskNodeData["sl"], onChange: (id: string, s: TaskStatus) => void) {
   const flat = flattenTasks(memory.tasks);
+  const idSet = new Set(flat.map((t) => t.id));
+
+  // Auto-chain: if a task has no valid dependencies, link it to the previous task
+  flat.forEach((t, i) => {
+    const validDeps = (t.dependencies ?? []).filter((d) => idSet.has(d));
+    if (validDeps.length === 0 && i > 0) {
+      t.dependencies = [flat[i - 1].id];
+    } else {
+      t.dependencies = validDeps;
+    }
+  });
+
   const nodes = flat.map((t) => ({
     id: t.id, type: "taskNode",
     data: { id: t.id, description: t.description, status: t.status, dependencies: t.dependencies, ai_feedback: t.ai_feedback, sl, onStatusChange: onChange },
     position: { x: 0, y: 0 },
   }));
   const edges = flat.flatMap((t) =>
-    t.dependencies.map((dep) => ({
+    (t.dependencies ?? []).map((dep) => ({
       id: `${dep}-${t.id}`, source: dep, target: t.id,
       animated: t.status === "in_progress",
       style: { strokeWidth: 2, stroke: t.status === "completed" ? "#22d3ee" : t.status === "in_progress" ? "#f59e0b" : "#334155" },
@@ -413,8 +428,7 @@ function TaskFlowView({ memory, workspaces, activeWsId, setActiveWsId, onChange,
 }
 
 // ─── Rules View ───────────────────────────────────────────────────────────────
-function RulesView({ t }: { t: typeof T["en"] }) {
-  const [rules, setRules] = usePersistedState<string[]>("ai_rules_arr", DEFAULT_RULES);
+function RulesView({ t, rules, setRules }: { t: typeof T["en"]; rules: string[]; setRules: React.Dispatch<React.SetStateAction<string[]>> }) {
   const [addModal, setAddModal] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<number | null>(null);
   const [newRule, setNewRule] = useState("");
@@ -476,9 +490,11 @@ function RulesView({ t }: { t: typeof T["en"] }) {
 }
 
 // ─── MODs View ────────────────────────────────────────────────────────────────
-function ModsView({ t, lang }: { t: typeof T["en"]; lang: Lang }) {
-  const [agentsEnabled, setAgentsEnabled] = usePersistedState("mods_agents_enabled", false);
-  const [activeSkills, setActiveSkills] = usePersistedState<Record<string, boolean>>("mods_skills", {});
+function ModsView({ t, lang, agentsEnabled, setAgentsEnabled, activeSkills, setActiveSkills }: { 
+  t: typeof T["en"]; lang: Lang;
+  agentsEnabled: boolean; setAgentsEnabled: React.Dispatch<React.SetStateAction<boolean>>;
+  activeSkills: Record<string, boolean>; setActiveSkills: React.Dispatch<React.SetStateAction<Record<string, boolean>>>;
+}) {
   const catLabel: Record<string, string> = {
     backend: t.catBackend, mobile: t.catMobile, testing: t.catTesting, quality: t.catQuality,
   };
@@ -652,10 +668,10 @@ function SettingsView({ lang, setLang, theme, setTheme, workspaces, setWorkspace
         <div className="grid gap-3">
           {t.aiGuideSteps.map((step, i) => (
             <div key={i} className="p-4 rounded-xl border card-bg">
-              <p className="text-sm font-bold t1 mb-1" style={{ color: i === t.aiGuideSteps.length - 1 ? "var(--accent)" : "currentColor" }}>
+              <p className="text-sm font-bold t1 mb-1" style={i === t.aiGuideSteps.length - 1 ? { color: "var(--accent)" } : undefined}>
                 {step.title}
               </p>
-              <p className="text-xs t3 leading-relaxed">{step.body}</p>
+              <p className="text-xs t3 leading-relaxed" style={{ whiteSpace: "pre-wrap" }}>{step.body}</p>
             </div>
           ))}
         </div>
@@ -754,6 +770,28 @@ export default function App() {
   const activeMemory = memoryMap[activeWsId] ?? (activeWsId === "ws-default" ? DEFAULT_MEMORY : { tasks: [] });
   const t = T[lang];
 
+  const [rules, setRules] = usePersistedState<string[]>("ai_rules_arr", DEFAULT_RULES);
+  const [agentsEnabled, setAgentsEnabled] = usePersistedState("mods_agents_enabled", false);
+  const [activeSkills, setActiveSkills] = usePersistedState<Record<string, boolean>>("mods_skills", {});
+
+  // Write AGENTS.md when dependencies change
+  useEffect(() => {
+    const ws = workspaces.find((w) => w.id === activeWsId);
+    if (!ws?.path || !agentsEnabled) return;
+    
+    const active = ALL_SKILLS.filter(s => activeSkills[s.id]);
+    let md = `# AGENTS.md\n\n> This file is auto-generated by the AI Agent Topology Viewer.\n\n`;
+    md += `## Global Rules\n\n`;
+    rules.forEach((r, i) => { md += `${i + 1}. ${r}\n`; });
+    
+    if (active.length > 0) {
+      md += `\n## Active Skills\n\nThe following skills must be applied strictly:\n\n`;
+      active.forEach(s => { md += `- **${s.en}**: ${s.zh}\n`; });
+    }
+    
+    invoke("save_workspace_file", { path: ws.path, filename: "AGENTS.md", content: md }).catch(console.error);
+  }, [activeWsId, workspaces, rules, agentsEnabled, activeSkills]);
+
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
   }, [theme]);
@@ -764,7 +802,12 @@ export default function App() {
     const cmd = ws?.path ? "load_agent_memory_from" : "load_agent_memory";
     invoke<AgentMemory>(cmd, invokeArgs)
       .then((p) => { if (p?.tasks?.length) setMemoryMap((m) => ({ ...m, [activeWsId]: p })); })
-      .catch(() => {});
+      .catch(() => {
+        const saveCmd = ws?.path ? "save_agent_memory_to" : "save_agent_memory";
+        const saveArgs = ws?.path ? { path: ws.path, memory: { tasks: [] } } : { memory: { tasks: [] } };
+        invoke(saveCmd, saveArgs).catch(() => {});
+        setMemoryMap((m) => ({ ...m, [activeWsId]: { tasks: [] } }));
+      });
     let unlisten: (() => void) | undefined;
     listen<AgentMemory>("agent_memory_updated", (e) => {
       if (e.payload?.tasks?.length) setMemoryMap((m) => ({ ...m, [activeWsId]: e.payload }));
@@ -803,8 +846,8 @@ export default function App() {
         <main className="ml-56 flex-1 h-screen p-5">
           <Routes>
             <Route path="/" element={<TaskFlowView memory={activeMemory} workspaces={workspaces} activeWsId={activeWsId} setActiveWsId={setActiveWsId} onChange={handleStatusChange} t={t} lang={lang} />} />
-            <Route path="/rules" element={<RulesView t={t} />} />
-            <Route path="/mods" element={<ModsView t={t} lang={lang} />} />
+            <Route path="/rules" element={<RulesView t={t} rules={rules} setRules={setRules} />} />
+            <Route path="/mods" element={<ModsView t={t} lang={lang} agentsEnabled={agentsEnabled} setAgentsEnabled={setAgentsEnabled} activeSkills={activeSkills} setActiveSkills={setActiveSkills} />} />
             <Route path="/settings" element={<SettingsView lang={lang} setLang={setLang} theme={theme} setTheme={setTheme} workspaces={workspaces} setWorkspaces={setWorkspaces} t={t} />} />
           </Routes>
         </main>

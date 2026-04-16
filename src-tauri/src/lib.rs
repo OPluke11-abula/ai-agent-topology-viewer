@@ -6,7 +6,7 @@ use std::{
     sync::mpsc,
     thread,
 };
-use tauri::{AppHandle, Emitter, Manager};
+use tauri::{AppHandle, Emitter};
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 struct AgentTask {
@@ -128,6 +128,13 @@ fn save_agent_memory_to(path: String, memory: AgentMemory) -> Result<(), String>
     fs::write(dir.join("agent_memory.json"), json).map_err(|e| e.to_string())
 }
 
+#[tauri::command]
+fn save_workspace_file(path: String, filename: String, content: String) -> Result<(), String> {
+    let dir = PathBuf::from(&path);
+    fs::create_dir_all(&dir).map_err(|e| e.to_string())?;
+    fs::write(dir.join(filename), content).map_err(|e| e.to_string())
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -142,6 +149,7 @@ pub fn run() {
             load_agent_memory_from,
             save_agent_memory,
             save_agent_memory_to,
+            save_workspace_file,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
