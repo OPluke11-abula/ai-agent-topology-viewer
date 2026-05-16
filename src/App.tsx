@@ -12,7 +12,7 @@ import { invoke } from "@tauri-apps/api/core";
 // ─── Types ───────────────────────────────────────────────────────────────────
 type TaskStatus = "pending" | "in_progress" | "completed";
 type Lang = "zh" | "en";
-type ThemeId = "dark" | "tokyo" | "light" | "forest" | "beige";
+type ThemeId = "dark" | "tokyo" | "light" | "ㄚ" | "beige";
 
 type AgentTask = {
   id: string; description: string; status: TaskStatus;
@@ -146,7 +146,7 @@ const T = {
 };
 
 // ─── Constants ───────────────────────────────────────────────────────────────
-const ALL_LANGS = ["TypeScript","JavaScript","Python","Rust","Go","Dart","Swift","Kotlin","C++","C#","Java","Ruby","PHP"];
+const ALL_LANGS = ["TypeScript", "JavaScript", "Python", "Rust", "Go", "Dart", "Swift", "Kotlin", "C++", "C#", "Java", "Ruby", "PHP"];
 
 const THEME_LIST: { id: ThemeId; accentNode: string }[] = [
   { id: "light", accentNode: "#0284c7" },
@@ -157,47 +157,55 @@ const THEME_LIST: { id: ThemeId; accentNode: string }[] = [
 ];
 
 const ALL_SKILLS = [
-  { id: "backend-architect",               cat: "backend",  zh: "後端架構師",         en: "Backend Architect" },
-  { id: "api-design-principles",           cat: "backend",  zh: "API 設計原則",       en: "API Design Principles" },
-  { id: "data-pipeline-architect",         cat: "backend",  zh: "資料管線架構師",     en: "Data Pipeline Architect" },
-  { id: "fastapi-swagger-sync",            cat: "backend",  zh: "FastAPI Swagger 同步", en: "FastAPI Swagger Sync" },
-  { id: "graphql-resolver-gen",            cat: "backend",  zh: "GraphQL 解析器生成", en: "GraphQL Resolver Gen" },
-  { id: "api-contract-sync",              cat: "backend",  zh: "API 合約同步",       en: "API Contract Sync" },
-  { id: "react-native-expert",             cat: "mobile",   zh: "React Native 專家",  en: "React Native Expert" },
-  { id: "react-native-perf-boost",         cat: "mobile",   zh: "React Native 效能優化", en: "React Native Perf Boost" },
-  { id: "mobile-sensor-integrator",        cat: "mobile",   zh: "行動感測器整合",     en: "Mobile Sensor Integrator" },
-  { id: "ui-ux-pro-max-skill",             cat: "mobile",   zh: "UI/UX 專業技能",     en: "UI/UX Pro Max" },
-  { id: "gamification-ui-kit",             cat: "mobile",   zh: "遊戲化 UI 套件",     en: "Gamification UI Kit" },
-  { id: "design-to-code-bridge",           cat: "mobile",   zh: "設計轉程式碼橋接",   en: "Design to Code Bridge" },
-  { id: "tdd-workflows-tdd-cycle",         cat: "testing",  zh: "TDD 工作流程",       en: "TDD Workflows" },
-  { id: "qa-auto-tester-pro",              cat: "testing",  zh: "QA 自動測試",        en: "QA Auto Tester Pro" },
-  { id: "doc-gen-pro",                     cat: "testing",  zh: "文件生成器",         en: "Doc Gen Pro" },
-  { id: "code-refactoring-refactor-clean", cat: "quality",  zh: "程式碼重構",         en: "Code Refactoring" },
-  { id: "code-review-ai-ai-review",        cat: "quality",  zh: "AI 程式碼審查",      en: "Code Review AI" },
-  { id: "python-ast-visualizer",           cat: "quality",  zh: "Python AST 視覺化",  en: "Python AST Visualizer" },
-  { id: "git-commit-standardizer",         cat: "quality",  zh: "Git 提交標準化",     en: "Git Commit Standardizer" },
-  { id: "python-algo-optimizer",           cat: "quality",  zh: "Python 演算法優化",  en: "Python Algo Optimizer" },
+  { id: "backend-architect", cat: "backend", zh: "後端架構師", en: "Backend Architect" },
+  { id: "api-design-principles", cat: "backend", zh: "API 設計原則", en: "API Design Principles" },
+  { id: "data-pipeline-architect", cat: "backend", zh: "資料管線架構師", en: "Data Pipeline Architect" },
+  { id: "fastapi-swagger-sync", cat: "backend", zh: "FastAPI Swagger 同步", en: "FastAPI Swagger Sync" },
+  { id: "graphql-resolver-gen", cat: "backend", zh: "GraphQL 解析器生成", en: "GraphQL Resolver Gen" },
+  { id: "api-contract-sync", cat: "backend", zh: "API 合約同步", en: "API Contract Sync" },
+  { id: "react-native-expert", cat: "mobile", zh: "React Native 專家", en: "React Native Expert" },
+  { id: "react-native-perf-boost", cat: "mobile", zh: "React Native 效能優化", en: "React Native Perf Boost" },
+  { id: "mobile-sensor-integrator", cat: "mobile", zh: "行動感測器整合", en: "Mobile Sensor Integrator" },
+  { id: "ui-ux-pro-max-skill", cat: "mobile", zh: "UI/UX 專業技能", en: "UI/UX Pro Max" },
+  { id: "gamification-ui-kit", cat: "mobile", zh: "遊戲化 UI 套件", en: "Gamification UI Kit" },
+  { id: "design-to-code-bridge", cat: "mobile", zh: "設計轉程式碼橋接", en: "Design to Code Bridge" },
+  { id: "tdd-workflows-tdd-cycle", cat: "testing", zh: "TDD 工作流程", en: "TDD Workflows" },
+  { id: "qa-auto-tester-pro", cat: "testing", zh: "QA 自動測試", en: "QA Auto Tester Pro" },
+  { id: "doc-gen-pro", cat: "testing", zh: "文件生成器", en: "Doc Gen Pro" },
+  { id: "code-refactoring-refactor-clean", cat: "quality", zh: "程式碼重構", en: "Code Refactoring" },
+  { id: "code-review-ai-ai-review", cat: "quality", zh: "AI 程式碼審查", en: "Code Review AI" },
+  { id: "python-ast-visualizer", cat: "quality", zh: "Python AST 視覺化", en: "Python AST Visualizer" },
+  { id: "git-commit-standardizer", cat: "quality", zh: "Git 提交標準化", en: "Git Commit Standardizer" },
+  { id: "python-algo-optimizer", cat: "quality", zh: "Python 演算法優化", en: "Python Algo Optimizer" },
 ];
 
-const CAT_KEYS = ["backend","mobile","testing","quality"] as const;
+const CAT_KEYS = ["backend", "mobile", "testing", "quality"] as const;
 
 const DEFAULT_MEMORY: AgentMemory = {
   tasks: [
-    { id: "task-001", description: "Initialize desktop topology viewer scaffold", status: "completed", dependencies: [],
+    {
+      id: "task-001", description: "Initialize desktop topology viewer scaffold", status: "completed", dependencies: [],
       ai_feedback: "Tauri 2.0 + Vite scaffolded cleanly. Recommend pinning Rust edition to 2021.",
       tasks: [
         { id: "task-001-01", description: "Set up Tauri + React + Vite architecture", status: "completed", dependencies: ["task-001"] },
         { id: "task-001-02", description: "Create fixed sidebar and route shells", status: "completed", dependencies: ["task-001-01"] },
-      ] },
-    { id: "task-002", description: "Render DAG from agent memory with dagre auto-layout", status: "in_progress", dependencies: ["task-001-02"],
+      ]
+    },
+    {
+      id: "task-002", description: "Render DAG from agent memory with dagre auto-layout", status: "in_progress", dependencies: ["task-001-02"],
       ai_feedback: "Dagre LR layout wired. nodesep=60, ranksep=130. No overlaps on complex trees.",
       tasks: [
         { id: "task-002-01", description: "Map dependencies into directed edges", status: "completed", dependencies: ["task-002"] },
-        { id: "task-002-02", description: "Display glowing status task cards", status: "in_progress", dependencies: ["task-002-01"],
-          ai_feedback: "In-progress nodes now emit pulsing amber glow via CSS keyframe animation." },
-      ] },
-    { id: "task-003", description: "Two-way sync: write status changes back to JSON", status: "completed", dependencies: ["task-002-02"],
-      ai_feedback: "save_agent_memory Tauri IPC implemented. Optimistic UI update fires before async write." },
+        {
+          id: "task-002-02", description: "Display glowing status task cards", status: "in_progress", dependencies: ["task-002-01"],
+          ai_feedback: "In-progress nodes now emit pulsing amber glow via CSS keyframe animation."
+        },
+      ]
+    },
+    {
+      id: "task-003", description: "Two-way sync: write status changes back to JSON", status: "completed", dependencies: ["task-002-02"],
+      ai_feedback: "save_agent_memory Tauri IPC implemented. Optimistic UI update fires before async write."
+    },
     { id: "task-004", description: "Persist settings, rules and mods across sessions", status: "pending", dependencies: ["task-003"] },
   ],
 };
@@ -211,7 +219,7 @@ const DEFAULT_RULES = [
 // ─── Hooks ────────────────────────────────────────────────────────────────────
 function usePersistedState<T>(key: string, initial: T) {
   const [state, setState] = useState<T>(() => {
-    try { const s = localStorage.getItem(key); if (s !== null) return JSON.parse(s); } catch {}
+    try { const s = localStorage.getItem(key); if (s !== null) return JSON.parse(s); } catch { }
     return initial;
   });
   useEffect(() => { localStorage.setItem(key, JSON.stringify(state)); }, [key, state]);
@@ -300,9 +308,9 @@ function Modal({ title, children, onConfirm, onCancel, confirmText, cancelText, 
 // ─── Task Node ────────────────────────────────────────────────────────────────
 function TaskNode({ data, selected }: NodeProps<TaskNodeData>) {
   const cfg = {
-    completed:  { card: "border-cyan-500/40",  bg: "rgba(8,47,73,0.4)",    glow: "glow-cyan",  dot: "bg-cyan-400",  sel: "border-cyan-500/40 text-cyan-300" },
-    in_progress:{ card: "border-amber-500/50", bg: "rgba(69,26,3,0.4)",    glow: "glow-amber", dot: "bg-amber-400 animate-ping", sel: "border-amber-500/50 text-amber-300" },
-    pending:    { card: "border-slate-700/50", bg: "rgba(15,23,42,0.4)",   glow: "",           dot: "bg-slate-600", sel: "border-slate-700/50 text-slate-400" },
+    completed: { card: "border-cyan-500/40", bg: "rgba(8,47,73,0.4)", glow: "glow-cyan", dot: "bg-cyan-400", sel: "border-cyan-500/40 text-cyan-300" },
+    in_progress: { card: "border-amber-500/50", bg: "rgba(69,26,3,0.4)", glow: "glow-amber", dot: "bg-amber-400 animate-ping", sel: "border-amber-500/50 text-amber-300" },
+    pending: { card: "border-slate-700/50", bg: "rgba(15,23,42,0.4)", glow: "", dot: "bg-slate-600", sel: "border-slate-700/50 text-slate-400" },
   }[data.status];
 
   return (
@@ -405,8 +413,8 @@ function TaskFlowView({ memory, workspaces, activeWsId, setActiveWsId, onChange,
                   <label className="text-[9px] font-bold uppercase tracking-widest t3">{t.deps}</label>
                   {selected.dependencies.length > 0
                     ? <ul className="mt-2 space-y-1">{selected.dependencies.map((d) => (
-                        <li key={d} className="text-xs font-mono px-3 py-1.5 rounded-lg border" style={{ background: "var(--bg-card)", color: "var(--accent)", borderColor: "var(--border-c)" }}>{d}</li>
-                      ))}</ul>
+                      <li key={d} className="text-xs font-mono px-3 py-1.5 rounded-lg border" style={{ background: "var(--bg-card)", color: "var(--accent)", borderColor: "var(--border-c)" }}>{d}</li>
+                    ))}</ul>
                     : <p className="mt-1 text-xs italic t3">{t.noDeps}</p>
                   }
                 </div>
@@ -490,7 +498,7 @@ function RulesView({ t, rules, setRules }: { t: typeof T["en"]; rules: string[];
 }
 
 // ─── MODs View ────────────────────────────────────────────────────────────────
-function ModsView({ t, lang, agentsEnabled, setAgentsEnabled, activeSkills, setActiveSkills }: { 
+function ModsView({ t, lang, agentsEnabled, setAgentsEnabled, activeSkills, setActiveSkills }: {
   t: typeof T["en"]; lang: Lang;
   agentsEnabled: boolean; setAgentsEnabled: React.Dispatch<React.SetStateAction<boolean>>;
   activeSkills: Record<string, boolean>; setActiveSkills: React.Dispatch<React.SetStateAction<Record<string, boolean>>>;
@@ -627,11 +635,11 @@ function SettingsView({ lang, setLang, theme, setTheme, workspaces, setWorkspace
                   placeholder={t.wsPathPlaceholder}
                   className="w-full rounded-lg border px-3 py-2 text-xs font-mono focus:outline-none focus:ring-1"
                   style={{ ...inputStyle, borderColor: "var(--border-c)", opacity: 0.85 }} />
-                <button type="button" 
+                <button type="button"
                   onClick={() => draftPaths[ws.id] !== undefined && updateWs(ws.id, "path", draftPaths[ws.id])}
                   className="text-xs font-bold px-3 py-2 rounded-lg border transition-all"
-                  style={draftPaths[ws.id] !== undefined && draftPaths[ws.id] !== ws.path ? 
-                    { background: "var(--accent)", color: "#fff", borderColor: "var(--accent)" } : 
+                  style={draftPaths[ws.id] !== undefined && draftPaths[ws.id] !== ws.path ?
+                    { background: "var(--accent)", color: "#fff", borderColor: "var(--accent)" } :
                     { ...inputStyle, opacity: 0.5, cursor: "not-allowed" }
                   }
                   disabled={draftPaths[ws.id] === undefined || draftPaths[ws.id] === ws.path}>
@@ -778,17 +786,17 @@ export default function App() {
   useEffect(() => {
     const ws = workspaces.find((w) => w.id === activeWsId);
     if (!ws?.path || !agentsEnabled) return;
-    
+
     const active = ALL_SKILLS.filter(s => activeSkills[s.id]);
     let md = `# AGENTS.md\n\n> This file is auto-generated by the AI Agent Topology Viewer.\n\n`;
     md += `## Global Rules\n\n`;
     rules.forEach((r, i) => { md += `${i + 1}. ${r}\n`; });
-    
+
     if (active.length > 0) {
       md += `\n## Active Skills\n\nThe following skills must be applied strictly:\n\n`;
       active.forEach(s => { md += `- **${s.en}**: ${s.zh}\n`; });
     }
-    
+
     invoke("save_workspace_file", { path: ws.path, filename: "AGENTS.md", content: md }).catch(console.error);
   }, [activeWsId, workspaces, rules, agentsEnabled, activeSkills]);
 
@@ -805,13 +813,13 @@ export default function App() {
       .catch(() => {
         const saveCmd = ws?.path ? "save_agent_memory_to" : "save_agent_memory";
         const saveArgs = ws?.path ? { path: ws.path, memory: { tasks: [] } } : { memory: { tasks: [] } };
-        invoke(saveCmd, saveArgs).catch(() => {});
+        invoke(saveCmd, saveArgs).catch(() => { });
         setMemoryMap((m) => ({ ...m, [activeWsId]: { tasks: [] } }));
       });
     let unlisten: (() => void) | undefined;
     listen<AgentMemory>("agent_memory_updated", (e) => {
       if (e.payload?.tasks?.length) setMemoryMap((m) => ({ ...m, [activeWsId]: e.payload }));
-    }).then((l) => (unlisten = l)).catch(() => {});
+    }).then((l) => (unlisten = l)).catch(() => { });
     return () => unlisten?.();
   }, [activeWsId]); // eslint-disable-line
 
